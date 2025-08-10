@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAIMechE UJ Merch Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- All CSS rules are embedded here -->
+    <style>
+        :root { 
+            --primary-color: #004488; 
+            --secondary-color: #0c2b4d; 
+            --accent-color: #ff9900; 
+            --text-color: #333; 
+            --bg-color: #f7f9fc; 
+            --border-color: #dde4ed; 
+            --card-bg: #fff; 
+            --success: #28a745; 
+            --error: #dc3545;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); -webkit-font-smoothing: antialiased; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: var(--card-bg); padding: 10px 0; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        #header-content { display: flex; align-items: center; justify-content: center; padding: 15px 0; flex-wrap: wrap; text-align: center; gap: 1rem;}
+        #logo-container img { max-height: 50px; }
+        #header-text .store-title { font-family: 'Poppins', sans-serif; font-size: 2rem; color: var(--primary-color); margin: 0; }
+        #header-text .store-slogan { font-size: 1rem; color: var(--secondary-color); margin-top: 4px; font-style: italic; }
+        #quote-section { padding: 4rem 2rem; text-align: center; }
+        .quote-slide { display: none; }
+        .quote-text { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 2rem; color: var(--secondary-color); line-height: 1.4; max-width: 800px; margin: 0 auto; }
+        .quote-author { font-size: 1.1rem; margin-top: 1rem; color: #777; font-style: italic; }
+        .fade { animation: fade 1.5s ease-in-out; }
+        @keyframes fade { from {opacity: .4} to {opacity: 1} }
+        .product-category-section { margin-top: 40px; }
+        .category-title { font-family: 'Poppins', sans-serif; font-size: 2.2rem; color: var(--primary-color); margin-bottom: 20px; border-bottom: 3px solid var(--accent-color); display: inline-block; padding-bottom: 5px; }
+        .slider-container { position: relative; overflow-x: auto; scrollbar-width: thin; scrollbar-color: var(--accent-color) #e0e0e0; padding-bottom: 20px; }
+        .slider-track { display: flex; gap: 20px; width: max-content; }
+        .product-card { width: 280px; flex-shrink: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; text-align: center; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; height: 280px; object-fit: cover; background-color: #eee; }
+        .product-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-card h3 { font-family: 'Poppins', sans-serif; margin: 0 0 10px 0; font-size: 1.25rem; color: var(--secondary-color); }
+        .product-price { color: var(--accent-color); font-weight: bold; font-size: 1.4rem; margin-bottom: 15px; }
+        .product-controls { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .size-selector { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--border-color); font-size: 1rem; background-color: #fff; }
+        .add-to-cart-label { display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; transition: background-color 0.2s; font-weight: bold; }
+        .add-to-cart-label input[type="checkbox"] { width: 18px; height: 18px; }
+        .product-card:has(input:checked) { border-color: var(--primary-color); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 68, 136, 0.2); }
+        .add-to-cart-label:has(input:checked) { background-color: #d4edda; color: #155724; }
+        .form-section-card { background: var(--card-bg); padding: 40px; border-radius: 12px; margin-top: 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .input-group { margin-bottom: 1.25rem; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid var(--border-color); box-sizing: border-box; font-size: 1rem; transition: all 0.2s; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0,68,136,0.1); outline: none; }
+        #total-display { font-size: 2.5rem; font-family: 'Poppins', sans-serif; color: var(--primary-color); text-align: right; }
+        button[type="submit"] { background-color: var(--accent-color); color: #fff; border: none; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; transition: all 0.3s; display: block; width: 100%; margin-top: 1rem; box-shadow: 0 4px 15px rgba(255, 153, 0, 0.4); }
+        button[type="submit"]:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 7px 20px rgba(255, 153, 0, 0.6); }
+        button[type="submit"]:disabled { background-color: #ccc; cursor: not-allowed; box-shadow: none; }
+        .message-area { text-align: center; padding: 2rem; margin-top: 20px; border-radius: 8px; display: none; font-weight: 500;}
+        .message-area.success { background-color: #d4edda; color: #155724; }
+        .message-area.error { background-color: #f8d7da; color: #721c24; }
+        .loader { display: none; text-align: center; padding: 20px 0; font-weight: bold; }
+        footer { background-color: #121212; color: #e0e0e0; text-align: center; padding: 40px 20px; margin-top: 60px; }
+        .footer-promo { background-color: var(--accent-color); color: var(--card-bg); padding: 1rem; border-radius: 8px; margin: -20px auto 30px auto; max-width: 800px;}
+        .footer-promo p { margin: 0; font-family: 'Poppins', sans-serif; font-weight: bold; font-size: 1.1rem;}
+        .footer-disclaimer { max-width: 700px; margin: 0 auto 20px auto; font-style: italic; opacity: 0.8; line-height: 1.6; }
+        .social-links a { margin: 0 15px; display: inline-block; }
+        .social-links img { height: 24px; transition: all 0.2s; filter: grayscale(1) invert(1) opacity(0.7); }
+        .social-links a:hover img { filter: grayscale(0) invert(0) opacity(1); transform: scale(1.1); }
+    </style>
+</head>
+<body>
+    <header>
+      <div id="header-content" class="container">
+        <div id="logo-container"><img src="https://cdn.ymaws.com/saimeche.site-ym.com/graphics/logo_2024.png" alt="SAIMechE Logo"></div>
+        <div id="header-text">
+          <h1 class="store-title">SAIMechE UJ Merch Store</h1>
+          <p class="store-slogan">Wear Your Passion. Support Your Chapter.</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div id="quote-section">
+          <div id="quote-slideshow"><!-- Quotes dynamically inserted here --></div>
+      </div>
+      
+      <form id="order-form">
+        <div id="product-section">
+            <!-- Products are dynamically inserted here -->
+        </div>
+
+        <div class="form-section-card">
+            <h2 class="category-title">Your Details</h2>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="whatsapp">WhatsApp Number</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" required>
+                </div>
+                 <div class="input-group">
+                    <label for="campus">UJ Campus</label>
+                    <select id="campus" name="campus" required>
+                        <option value="">-- Please select --</option>
+                        <option value="APB">APB</option>
+                        <option value="APK">APK</option>
+                        <option value="DFC">DFC</option>
+                        <option value="SWC">SWC</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section-card">
+            <h2 class="category-title">Payment & Delivery</h2>
+            <div class="input-group">
+                <label for="pop">Proof of Payment (PDF, PNG, or JPG)</label>
+                <input type="file" id="pop" name="pop" accept=".pdf,.png,.jpeg,.jpg" required>
+            </div>
+            <div class="input-group">
+                <label for="deliveryInstructions">Delivery Instructions</label>
+                <textarea id="deliveryInstructions" name="deliveryInstructions" rows="3" placeholder="e.g., I will collect on campus next Monday."></textarea>
+            </div>
+        </div>
+        
+        <div class="form-section-card">
+            <h2 class="category-title">Order Summary</h2>
+            <div class="input-group">
+                <label for="promoCode">Promo Code (Optional)</label>
+                <input type="text" id="promoCode" name="promoCode">
+            </div>
+            <p style="text-align: right; color: var(--text-color); font-weight: bold;">Total Amount</p>
+            <p id="total-display">R 0.00</p>
+        </div>
+
+        <div class="message-area" id="message-area"></div>
+        <div class="loader" id="loader"><p>Submitting your order... This may take a moment.</p></div>
+        <button type="submit" id="submit-button">Place My Order</button>
+      </form>
+    </main>
+
+    <footer>
+        <div class="footer-promo">
+            <p>📸 Tag us wearing your merch to win a promo code for your next order! 🏆</p>
+        </div>
+        <p class="footer-disclaimer">These items are not sold for the profit of any individual, but to help SAIMechE @UJ SC fund activities for students.</p>
+        <div class="social-links">
+          <a href="https://www.facebook.com/SAIMechEStudentChapterUJ" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook"></a>
+          <a href="https://www.instagram.com/stories/saimechestudchap_ujapk/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram"></a>
+          <a href="https://www.linkedin.com/in/saimeche-student-chapter-uj-apk-88516813b/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn"></a>
+        </div>
+    </footer>
+    
+    <!-- All JavaScript is now embedded here, right before the closing body tag -->
+    <script>
+        // ==========================================================
+        // THE JAVASCRIPT LOGIC - WITH SYNTAX CORRECTIONS
+        // ==========================================================
+
+        // --- CONFIGURATION ---
+        // IMPORTANT: You MUST replace this with the new URL you get from deploying your script.
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhJwcADmwXra3N0uu9AsrBZW-DsQHKTsjGz_XajZuVAJMvlRATxzT_CeqaYUcixP92/exec";
+
+        // --- GLOBAL STATE ---
+        let allProducts = [];
+        let promoCodes = {};
+        const engineeringQuotes = [
+            { text: "The engineer has been, and is, a maker of history.", author: "James Kip Finch" },
+            { text: "Science can amuse and fascinate us all, but it is engineering that changes the world.", author: "Isaac Asimov" },
+            { text: "At its heart, engineering is about using science to find creative, practical solutions. It is a noble profession.", author: "Queen Elizabeth II" }
+        ];
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // CORRECTED: The fetch URL is a template literal and must be wrapped in backticks (`).
+            fetch(`${SCRIPT_URL}?action=getInitialData`)
+                .then(response => response.json())
+                .then(data => initializePage(data))
+                .catch(error => handleError({ message: "Could not connect to the server. Please try again later. Error: " + error }));
+            
+            displayEngineeringQuotes();
+        });
+
+        function initializePage(data) {
+            if (!data.success) {
+                handleError({ message: data.message });
+                return;
+            }
+            allProducts = data.products;
+            promoCodes = data.promoCodes;
+            renderProducts();
+
+            const orderForm = document.getElementById('order-form');
+            orderForm.addEventListener('input', updateTotal);
+            orderForm.addEventListener('submit', handleFormSubmit);
+
+            const promoInput = document.getElementById('promoCode');
+            promoInput.addEventListener('input', () => {
+                promoInput.value = promoInput.value.toUpperCase();
+            });
+        }
+
+        function renderProducts() {
+            const productSection = document.getElementById('product-section');
+            if (!allProducts || allProducts.length === 0) {
+                productSection.innerHTML = '<p>No products available right now.</p>';
+                return;
+            }
+            const categories = allProducts.reduce((acc, p) => {
+                const category = p.name.includes('Hoodie') ? 'Hoodies' : 'T-Shirts';
+                if (!acc[category]) acc[category] = [];
+                acc[category].push(p);
+                return acc;
+            }, {});
+
+            let fullHtml = '';
+            for (const categoryName in categories) {
+                // CORRECTED: Multi-line HTML strings must be wrapped in backticks (`).
+                let productCardsHtml = categories[categoryName].map(p => `
+                    <div class="product-card">
+                        <img src="${p.image}" alt="${p.name}">
+                        <div class="product-info">
+                            <div><h3>${p.name}</h3><p class="price">R ${p.price.toFixed(2)}</p></div>
+                            <div class="product-controls">
+                                <select class="size-selector" data-product-name="${p.name}"><option>S</option><option selected>M</option><option>L</option><option>XL</option><option>XXL</option></select>
+                                <label class="add-to-cart-label"><input type="checkbox" name="product-select" value="${p.name}" data-price="${p.price}">Add to Order</label>
+                            </div>
+                        </div>
+                    </div>`).join('');
+
+                // CORRECTED: This HTML block also needs to be a string, wrapped in backticks (`).
+                fullHtml += `<div class="product-category-section"><h2 class="category-title">${categoryName}</h2><div class="slider-container"><div class="slider-track">${productCardsHtml}</div></div></div>`;
+            }
+            productSection.innerHTML = fullHtml;
+        }
+
+        function updateTotal() {
+            let total = 0;
+            document.querySelectorAll('input[name="product-select"]:checked').forEach(box => { total += parseFloat(box.dataset.price); });
+            const promoInput = document.getElementById('promoCode');
+            const code = promoInput.value.trim().toUpperCase();
+            if (code && promoCodes[code] !== undefined) {
+                total *= (1 - promoCodes[code]);
+                promoInput.style.borderColor = 'var(--success)';
+            } else if (code) {
+                promoInput.style.borderColor = 'var(--error)';
+            } else {
+                promoInput.style.borderColor = 'var(--border-color)';
+            }
+            // CORRECTED: A string with a variable must be a template literal wrapped in backticks (`).
+            document.getElementById('total-display').textContent = `R ${total.toFixed(2)}`;
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const orderedProducts = [];
+            form.querySelectorAll('input[name="product-select"]:checked').forEach(checkbox => {
+                // CORRECTED: The selector string for querySelector must be wrapped in backticks (`).
+                orderedProducts.push({
+                    name: checkbox.value,
+                    size: form.querySelector(`.size-selector[data-product-name="${checkbox.value}"]`).value
+                });
+            });
+
+            const file = form.pop.files[0];
+            if (orderedProducts.length === 0) {
+                alert("Please select at least one product.");
+                return;
+            }
+            if (!file) {
+                alert("Please select your Proof of Payment file.");
+                return;
+            }
+            
+            toggleLoading(true);
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                const fileData = {
+                    name: file.name,
+                    mimeType: file.type,
+                    data: e.target.result.split(',')[1] 
+                };
+                const formObject = {
+                    name: form.name.value, email: form.email.value, whatsapp: form.whatsapp.value,
+                    campus: form.campus.value, deliveryInstructions: form.deliveryInstructions.value,
+                    promoCode: form.promoCode.value, orderedProducts: orderedProducts
+                };
+
+                const requestBody = {
+                    formObject: formObject,
+                    fileData: fileData
+                };
+                
+                // CORRECTED: The fetch URL must be a template literal wrapped in backticks (`).
+                fetch(`${SCRIPT_URL}?action=processForm`, {
+                    method: 'POST',
+                    body: JSON.stringify(requestBody),
+                })
+                .then(response => response.json())
+                .then(data => handleSuccess(data))
+                .catch(error => handleError({ message: "Network error: " + error }));
+            };
+            reader.onerror = () => handleError({ message: 'Could not read the selected file.' });
+            reader.readAsDataURL(file);
+        }
+
+        function handleSuccess(response) {
+            toggleLoading(false);
+            if (!response.success) {
+                return handleError(response);
+            }
+            document.getElementById('order-form').style.display = 'none';
+            const messageArea = document.getElementById('message-area');
+            messageArea.className = 'message-area success';
+            // CORRECTED: An HTML string must be wrapped in quotes or backticks (`).
+            messageArea.innerHTML = `<h2>Thank You!</h2><p>Your order #${response.orderNumber} has been submitted. A confirmation email is on its way.</p>`;
+            messageArea.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleError(error) {
+            toggleLoading(false);
+            const messageArea = document.getElementById('message-area');
+            messageArea.className = 'message-area error';
+            // CORRECTED: This string needs to be a template literal wrapped in backticks (`).
+            messageArea.textContent = `Error: ${error.message || 'An unknown error occurred.'}`;
+            messageArea.style.display = 'block';
+        }
+
+        function toggleLoading(isLoading) {
+            document.getElementById('submit-button').style.display = isLoading ? 'none' : 'block';
+            document.getElementById('loader').style.display = isLoading ? 'block' : 'none';
+            document.getElementById('submit-button').disabled = isLoading;
+            if(!isLoading) document.getElementById('message-area').style.display = 'none';
+        }
+
+        let quoteIndex = 0;
+        function displayEngineeringQuotes() {
+            const container = document.getElementById('quote-slideshow');
+            if(!container) return;
+            // CORRECTED: Multi-line HTML string needs to be wrapped in backticks (`).
+            container.innerHTML = engineeringQuotes.map(q => `<div class="quote-slide fade"><p class="quote-text">"${q.text}"</p><p class="quote-author">- ${q.author}</p></div>`).join('');
+            showQuotes();
+        }
+
+        function showQuotes() {
+            let quotes = document.getElementsByClassName("quote-slide");
+            if (quotes.length === 0) return;
+            for (let i = 0; i < quotes.length; i++) { quotes[i].style.display = "none"; }
+            quoteIndex = (quoteIndex + 1 > quotes.length) ? 1 : quoteIndex + 1;
+            if (quotes[quoteIndex - 1]) {
+                quotes[quoteIndex - 1].style.display = "block";
+            }
+            setTimeout(showQuotes, 7000);
+        }
+    </script>
+</body>
+</html>
